@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pokedex</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="search">
+      <span>Enter a Pokemon name or number: </span>
+      <input type="text" name="name-input" id="name-input" />
+      <button id="submit-button" onclick="searchPokemon()">Search</button>
+    </div>
+    <div id="results"></div>
+  </body>
+  <script type="text/javascript">
+    // add enter listener to textbox
+    $(document).ready(function() {
+      $("#name-input").keyup(function(e) {
+        if (e.keyCode == 13) $("#submit-button").click();
+      });
+    });
+
+    function searchPokemon() {
+      $("#results").html("");
+      const name = $("#name-input").val();
+      if (!name) {
+        alert("Enter a name or number!");
+        return;
+      }
+      $("#results").html("Searching...");
+      const apiUrl = "https://pokeapi.co/api/v2/pokemon/" + name;
+      $.ajax(apiUrl, {
+        success: function(data) {
+          $("#results").html(`Name: ${data.name}, Number: ${
+            data.id
+          }, Type(s): ${getTypeString(data.types)}
+          `);
+        },
+        error: function() {
+          $("#results").html(`${name} not found!`);
+        }
+      });
+    }
+
+    function getTypeString(dataTypes) {
+      console.log(dataTypes);
+      types = [];
+      dataTypes.forEach(type => {
+        console.log(type);
+        types.push(type.type.name);
+      });
+      return types.join(", ");
+    }
+  </script>
+</html>
